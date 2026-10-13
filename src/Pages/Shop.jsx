@@ -27,7 +27,6 @@ function Shop({ onAddToCart }) {
         Our Products
       </h2>
 
-      {/* Strict Breakpoint Grid: 2 columns on phone, scaling up seamlessly across 640px, 768px, 1024px, and 1280px */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         {product.map((item) => (
           <div
@@ -35,7 +34,6 @@ function Shop({ onAddToCart }) {
             className="bg-white border border-slate-200 rounded-xl p-3 sm:p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"
           >
             <div>
-              {/* Proportional image container height across screen sizes */}
               <div className="w-full h-36 sm:h-40 md:h-48 flex items-center justify-center bg-slate-50 rounded-lg mb-3 p-2">
                 <img
                   src={item.image}
@@ -44,7 +42,6 @@ function Shop({ onAddToCart }) {
                 />
               </div>
 
-              {/* Controlled text sizing and strict clamping to prevent overflow */}
               <h3 className="font-semibold text-slate-800 text-xs sm:text-sm md:text-base mb-1 line-clamp-1">
                 {item.title || item.name}
               </h3>

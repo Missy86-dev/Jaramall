@@ -1,75 +1,79 @@
-import React from "react";
+import React, { useState } from "react";
 
-function Cart({ cart, onRemoveFromCart }) {
-  if (cart.length === 0) {
+function Cart({ cart, onRemoveFromCart, onClearCart }) {
+  const [isCheckout, setIsCheckout] = useState(false);
+  const [method, setMethod] = useState("card");
+  const [isPaid, setIsPaid] = useState(false);
+
+  // Price calculations
+  const subtotal = cart.reduce(
+    (sum, item) =>
+      sum + (typeof item.price === "number" ? item.price * 1200 : 0),
+    0,
+  );
+  const delivery = subtotal > 0 ? 2500 : 0;
+  const total = subtotal + delivery;
+
+  const fmt = (amt) =>
+    `₦${amt.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+
+  if (isPaid) {
     return (
-      <div className="max-w-[1280px] mx-auto px-4 py-16 text-center">
-        <p className="font-serif text-lg sm:text-xl text-neutral-600 mb-4">
-          Your cart is currently empty.
+      <div className="p-8 text-center bg-[#f4f1ea] max-w-md mx-auto my-12 rounded-xl">
+        <h2 className="text-2xl font-serif font-bold text-emerald-700 mb-2">
+          Order Confirmed! ✓
+        </h2>
+        <p className="text-sm text-neutral-600 mb-6">
+          Thank you for shopping with JaraMall.
         </p>
+        <button
+          onClick={() => setIsPaid(false)}
+          className="bg-slate-900 text-white text-xs uppercase px-6 py-3 font-semibold"
+        >
+          Back to Shop
+        </button>
       </div>
     );
   }
 
-  // Helper function to format prices cleanly
-  const formatPrice = (price) => {
-    const numPrice = typeof price === "number" ? price * 1200 : 0;
-    return `₦${numPrice.toLocaleString("en-US")}`;
-  };
-
-  const formatTotal = (amount) => {
-    return `₦${amount.toLocaleString("en-US")}`;
-  };
-
-  const totalPrice = cart.reduce((sum, item) => {
-    const numPrice =
-      typeof item.price === "number"
-        ? item.price * 1200
-        : Number(String(item.price).replace(/[^0-9.]/g, "")) || 0;
-    return sum + numPrice;
-  }, 0);
+  if (cart.length === 0)
+    return (
+      <div className="p-16 text-center font-serif text-neutral-600">
+        Your cart is empty.
+      </div>
+    );
 
   return (
-    <div className="w-full max-w-[800px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
-      <h2 className="font-serif text-2xl sm:text-3xl font-medium mb-8 text-slate-900 border-b border-neutral-200 pb-4">
+    <div className="max-w-[700px] mx-auto px-4 py-8">
+      <h2 className="font-serif text-2xl font-medium mb-6 border-b pb-2">
         Your Cart ({cart.length})
       </h2>
 
-      {/* Cart Items List */}
-      <div className="flex flex-col divide-y divide-neutral-200/80 mb-8">
-        {cart.map((product, index) => (
+      {/* Cart Items */}
+      <div className="divide-y divide-neutral-200 mb-6">
+        {cart.map((item, idx) => (
           <div
-            key={index}
-            className="py-4 sm:py-6 flex items-center justify-between gap-4"
+            key={idx}
+            className="py-4 flex justify-between items-center gap-4"
           >
-            <div className="flex items-center gap-4 sm:gap-6">
-              {product.image && (
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#f4f1ea] shrink-0 flex items-center justify-center p-2">
-                  <img
-                    src={product.image}
-                    alt={product.title || product.name}
-                    className="max-h-full max-w-full object-contain mix-blend-multiply"
-                  />
-                </div>
-              )}
+            <div className="flex items-center gap-4">
+              <img
+                src={item.image}
+                alt=""
+                className="w-14 h-14 object-contain bg-[#f4f1ea] p-1"
+              />
               <div>
-                <span className="block text-[10px] font-semibold tracking-widest text-neutral-400 uppercase mb-0.5">
-                  {product.category || "COLLECTION"}
-                </span>
-                <h4 className="font-serif text-sm sm:text-base font-medium text-slate-900 line-clamp-1">
-                  {product.title || product.name}
+                <h4 className="font-serif text-sm font-medium line-clamp-1">
+                  {item.title}
                 </h4>
-                <span className="text-xs sm:text-sm font-medium text-neutral-600 block mt-1">
-                  {typeof product.price === "number"
-                    ? formatPrice(product.price)
-                    : product.price}
+                <span className="text-xs text-neutral-600">
+                  {fmt(item.price * 1200)}
                 </span>
               </div>
             </div>
-
             <button
-              className="text-xs sm:text-sm text-neutral-400 hover:text-red-600 font-medium transition-colors p-2 shrink-0"
-              onClick={() => onRemoveFromCart(index)}
+              onClick={() => onRemoveFromCart(idx)}
+              className="text-xs text-red-500 hover:underline"
             >
               Remove
             </button>
@@ -77,21 +81,84 @@ function Cart({ cart, onRemoveFromCart }) {
         ))}
       </div>
 
-      {/* Checkout Summary */}
-      <div className="bg-[#f4f1ea] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <span className="text-xs uppercase tracking-widest text-neutral-500 block mb-1">
-            Order Total
-          </span>
-          <span className="font-serif text-2xl sm:text-3xl font-medium text-slate-900">
-            {formatTotal(totalPrice)}
-          </span>
+      {/* Summary */}
+      <div className="bg-[#f4f1ea] p-6 rounded-lg">
+        <div className="text-xs flex justify-between mb-2">
+          <span>Subtotal:</span>
+          <span>{fmt(subtotal)}</span>
+        </div>
+        <div className="text-xs flex justify-between mb-4">
+          <span>Delivery:</span>
+          <span>{fmt(delivery)}</span>
+        </div>
+        <div className="text-lg font-serif font-bold flex justify-between mb-6">
+          <span>Total:</span>
+          <span>{fmt(total)}</span>
         </div>
 
-        <button className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm uppercase tracking-widest font-semibold px-8 py-3.5 transition-colors cursor-pointer">
-          Proceed to Checkout
+        <button
+          onClick={() => setIsCheckout(true)}
+          className="w-full bg-slate-900 text-white text-xs uppercase tracking-widest py-3.5 font-semibold"
+        >
+          Checkout
         </button>
       </div>
+
+      {/* Minimal Checkout Modal */}
+      {isCheckout && (
+        <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setIsPaid(true);
+              setIsCheckout(false);
+              if (onClearCart) onClearCart();
+            }}
+            className="bg-white p-6 rounded-xl w-full max-w-sm flex flex-col gap-3"
+          >
+            <h3 className="font-serif text-lg font-bold">Checkout</h3>
+            <input
+              required
+              placeholder="Full Name"
+              className="border p-2 text-sm rounded"
+            />
+            <input
+              required
+              type="email"
+              placeholder="Email"
+              className="border p-2 text-sm rounded"
+            />
+
+            {/* 3 Payment Options */}
+            <div className="grid grid-cols-3 gap-2 my-2">
+              {["card", "paystack", "transfer"].map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMethod(m)}
+                  className={`p-2 border text-xs capitalize rounded ${method === m ? "border-slate-900 bg-slate-100 font-bold" : "text-neutral-500"}`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="submit"
+              className="bg-emerald-700 text-white text-xs uppercase py-3 font-semibold rounded"
+            >
+              Pay {fmt(total)}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsCheckout(false)}
+              className="text-xs text-neutral-500 mt-1"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

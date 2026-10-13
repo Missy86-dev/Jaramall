@@ -5,7 +5,6 @@ function NavBar({ cartCount, activeTab, setActiveTab }) {
   return (
     <header className="w-full bg-[#fcfbf9] border-b border-neutral-200/60 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
         <Link
           to="/"
           onClick={() => setActiveTab("shop")}
@@ -14,7 +13,6 @@ function NavBar({ cartCount, activeTab, setActiveTab }) {
           JaraMall
         </Link>
 
-        {/* Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
           <button
             className={`text-xs sm:text-sm font-medium px-3.5 py-1.5 rounded-full transition-all duration-200 ${
