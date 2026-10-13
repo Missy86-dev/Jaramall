@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 
+const RATE = 1200;
+
+const formatPrice = (price) => {
+  const num = typeof price === "number" ? price * RATE : 0;
+  return `₦${num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+
 function Cart({ cart, onRemoveFromCart, onClearCart }) {
   const [isCheckout, setIsCheckout] = useState(false);
   const [method, setMethod] = useState("card");
   const [isPaid, setIsPaid] = useState(false);
 
-  // Price calculations
   const subtotal = cart.reduce(
     (sum, item) =>
-      sum + (typeof item.price === "number" ? item.price * 1200 : 0),
+      sum + (typeof item.price === "number" ? item.price * RATE : 0),
     0,
   );
   const delivery = subtotal > 0 ? 2500 : 0;
   const total = subtotal + delivery;
-
-  const fmt = (amt) =>
-    `₦${amt.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 
   if (isPaid) {
     return (
@@ -28,7 +31,7 @@ function Cart({ cart, onRemoveFromCart, onClearCart }) {
         </p>
         <button
           onClick={() => setIsPaid(false)}
-          className="bg-slate-900 text-white text-xs uppercase px-6 py-3 font-semibold"
+          className="bg-blue-600 hover:bg-blue-500 hover:scale-95 transition-all duration-200 ease-in-out text-white text-xs uppercase px-6 py-3 font-semibold rounded-lg"
         >
           Back to Shop
         </button>
@@ -36,7 +39,7 @@ function Cart({ cart, onRemoveFromCart, onClearCart }) {
     );
   }
 
-  if (cart.length === 0)
+  if (!cart.length)
     return (
       <div className="p-16 text-center font-serif text-neutral-600">
         Your cart is empty.
@@ -67,7 +70,7 @@ function Cart({ cart, onRemoveFromCart, onClearCart }) {
                   {item.title}
                 </h4>
                 <span className="text-xs text-neutral-600">
-                  {fmt(item.price * 1200)}
+                  {formatPrice(item.price)}
                 </span>
               </div>
             </div>
@@ -85,26 +88,26 @@ function Cart({ cart, onRemoveFromCart, onClearCart }) {
       <div className="bg-[#f4f1ea] p-6 rounded-lg">
         <div className="text-xs flex justify-between mb-2">
           <span>Subtotal:</span>
-          <span>{fmt(subtotal)}</span>
+          <span>{formatPrice(subtotal / RATE)}</span>
         </div>
         <div className="text-xs flex justify-between mb-4">
           <span>Delivery:</span>
-          <span>{fmt(delivery)}</span>
+          <span>{formatPrice(delivery / RATE)}</span>
         </div>
         <div className="text-lg font-serif font-bold flex justify-between mb-6">
           <span>Total:</span>
-          <span>{fmt(total)}</span>
+          <span>{formatPrice(total / RATE)}</span>
         </div>
 
         <button
           onClick={() => setIsCheckout(true)}
-          className="w-full bg-slate-900 text-white text-xs uppercase tracking-widest py-3.5 font-semibold"
+          className="w-full bg-blue-600 hover:bg-blue-500 hover:scale-95 transition-all duration-200 ease-in-out text-white text-xs uppercase tracking-widest py-3.5 font-semibold rounded-lg"
         >
           Checkout
         </button>
       </div>
 
-      {/* Minimal Checkout Modal */}
+      {/* Checkout Modal */}
       {isCheckout && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
           <form
@@ -136,7 +139,11 @@ function Cart({ cart, onRemoveFromCart, onClearCart }) {
                   key={m}
                   type="button"
                   onClick={() => setMethod(m)}
-                  className={`p-2 border text-xs capitalize rounded ${method === m ? "border-slate-900 bg-slate-100 font-bold" : "text-neutral-500"}`}
+                  className={`p-2 border text-xs capitalize rounded transition-all duration-150 ${
+                    method === m
+                      ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
+                      : "text-neutral-500"
+                  }`}
                 >
                   {m}
                 </button>
@@ -145,9 +152,9 @@ function Cart({ cart, onRemoveFromCart, onClearCart }) {
 
             <button
               type="submit"
-              className="bg-emerald-700 text-white text-xs uppercase py-3 font-semibold rounded"
+              className="bg-blue-600 hover:bg-blue-500 hover:scale-95 transition-all duration-200 ease-in-out text-white text-xs uppercase py-3 font-semibold rounded-lg"
             >
-              Pay {fmt(total)}
+              Pay {formatPrice(total / RATE)}
             </button>
             <button
               type="button"
