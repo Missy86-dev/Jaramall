@@ -1,63 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-const Products = [
-  {
-    id: 1,
-    title: "Classic Sneakers",
-    price: "₦35,000",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
-    description:
-      "Comfortable everyday low-top sneakers crafted with premium materials.",
-  },
-  {
-    id: 2,
-    title: "Leather Backpack",
-    price: "₦45,000",
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500",
-    description:
-      "Spacious multi-compartment leather backpack designed for work and daily travel.",
-  },
-  {
-    id: 3,
-    title: "Wireless Headphones",
-    price: "₦28,000",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
-    description:
-      "High-fidelity noise-canceling headphones with extended battery life.",
-  },
-  {
-    id: 4,
-    title: "Smart Watch",
-    price: "₦65,000",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
-    description:
-      "Track your workouts, heart rate, and notifications in real time.",
-  },
-  {
-    id: 5,
-    title: "Designer Sunglasses",
-    price: "₦18,000",
-    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500",
-    description:
-      "Polarized UV400 protected sunglasses with a lightweight ergonomic frame.",
-  },
-  {
-    id: 6,
-    title: "Portable Speaker",
-    price: "₦22,000",
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500",
-    description:
-      "Compact waterproof Bluetooth speaker with 360-degree sound projection.",
-  },
-];
-
 function Shop({ onAddToCart }) {
   const [product, setProduct] = useState([]);
 
-  // Reusable helper function for clean decimals and comma separation
   const formatPrice = (price) => {
     const numPrice = typeof price === "number" ? price * 1200 : 0;
-    return `₦${numPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `₦${numPrice.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   function getallproducts() {
@@ -70,45 +21,55 @@ function Shop({ onAddToCart }) {
     getallproducts();
   }, []);
 
-  console.log(product);
-
   return (
-    <section>
-      <h2 className="text-center text-3xl font-bold mb-10 tracking-[--0.02rem]">
+    <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 md:px-8 lg:px-12 py-6 sm:py-8">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 text-slate-800">
         Our Products
       </h2>
-      <div className="grid grid-cols-3 gap-6">
-        {product.map((product) => (
+
+      {/* Strict Breakpoint Grid: 2 columns on phone, scaling up seamlessly across 640px, 768px, 1024px, and 1280px */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        {product.map((item) => (
           <div
-            key={product.id}
-            className="bg-white border border-slate-200 rounded-xl p-6 text-center flex flex-col items-center justify-between shadow-sm"
+            key={item.id}
+            className="bg-white border border-slate-200 rounded-xl p-3 sm:p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow"
           >
-            <img
-              src={product.image}
-              alt={product.title || product.name}
-              className="w-full max-w-[150px] h-[150px] object-contain mb-4 mix-blend-multiply"
-            />
-            <h3 className="text-base font-bold text-slate-900 mb-2 leading-[1.3] line-clamp-2 overflow-hidden">
-              {product.title || product.name}
-            </h3>
-            <p className="text-[0.85rem] text-slate-500 mb-3 leading-[1.4] line-clamp-2 overflow-hidden">
-              {product.description}
-            </p>
-            <p className="text-[1.15rem] font-bold text-emerald-600 mb-4 mt-auto">
-              {typeof product.price === "number"
-                ? formatPrice(product.price)
-                : product.price}
-            </p>
-            <button
-              className="w-full bg-blue-600 text-white border-none rounded-lg px-3 py-3 text-[0.95rem] font-semibold cursor-pointer transition-all duration-150 hover:bg-blue-700 active:scale-[0.99]"
-              onClick={() => onAddToCart(product)}
-            >
-              Add to Cart
-            </button>
+            <div>
+              {/* Proportional image container height across screen sizes */}
+              <div className="w-full h-36 sm:h-40 md:h-48 flex items-center justify-center bg-slate-50 rounded-lg mb-3 p-2">
+                <img
+                  src={item.image}
+                  alt={item.title || item.name}
+                  className="max-h-full max-w-full object-contain mix-blend-multiply"
+                />
+              </div>
+
+              {/* Controlled text sizing and strict clamping to prevent overflow */}
+              <h3 className="font-semibold text-slate-800 text-xs sm:text-sm md:text-base mb-1 line-clamp-1">
+                {item.title || item.name}
+              </h3>
+              <p className="text-slate-500 text-[10px] sm:text-xs md:text-sm mb-3 line-clamp-2 leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+
+            <div>
+              <span className="text-xs sm:text-sm md:text-lg font-bold text-slate-900 block mb-2 sm:mb-3">
+                {typeof item.price === "number"
+                  ? formatPrice(item.price)
+                  : item.price}
+              </span>
+              <button
+                className="w-full bg-blue-600 text-white border-none rounded-lg py-2 px-2 text-xs sm:text-sm font-semibold cursor-pointer transition-all duration-150 hover:bg-blue-700 active:scale-[0.99]"
+                onClick={() => onAddToCart(item)}
+              >
+                Add to Cart
+              </button>
+            </div>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 

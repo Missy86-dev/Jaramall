@@ -3,7 +3,6 @@ import NavBar from "./Components/NavBar";
 import Shop from "./Pages/Shop";
 import Cart from "./Pages/Cart";
 import Footer from "./Components/Footer";
-import "./App.css";
 
 function App() {
   const [activeTab, setActiveTab] = useState("shop");
@@ -20,14 +19,14 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="min-h-screen flex flex-col bg-[#fcfbf9] text-slate-800 antialiased">
       <NavBar
         cartCount={cart.length}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
 
-      <main>
+      <main className="flex-grow w-full">
         {activeTab === "shop" ? (
           <Shop onAddToCart={addToCart} />
         ) : (
